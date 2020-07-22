@@ -1,0 +1,45 @@
+{
+  "name": "journey-presentations",
+  "version": "0.0.1",
+  "description": "Framework for presentations which take people on a journey",
+  "main": "build/src/library.js",
+  "types": "build/src/library.d.ts",
+  "scripts": {
+    "build": "rm -rf build && tsc",
+    "test": "mocha build/test/bootstrap.js build/test/unit/**/*.test.js",
+    "lint": "tslint --project ./tsconfig.json --fix ./src/**/*.ts ./test/**/*.ts"
+  },
+  "files": [
+    "build/src"
+  ],
+  "mocha": {
+    "require": "source-map-support/register",
+    "recursive": true,
+    "timeout": 2000
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foo42/journey.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/lodash": "^4.14.149",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^10.17.13",
+    "@types/react": "^16.9.23",
+    "chai": "^4.2.0",
+    "mocha": "^7.1.0",
+    "source-map-support": "^0.5.16",
+    "tslint": "^5.20.1",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^3.7.5",
+    "react": "^16.13.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
+  },
+  "peerDependencies": {
+    "react": "16.x"
+  }
+}

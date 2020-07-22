@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "tslint-config-standard"
+  ],
+  "linterOptions": {
+    "excludes": [
+      "node_modules/*/**.ts"
+    ]
+  },
+  "rules": {
+    "no-unused-variable": false,
+    "no-unsafe-any": true,
+    "await-promise": [true, "Bluebird", "PromiseLike"],
+    "ordered-imports": true,
+    "max-line-length": [true, 180]
+  }
+}
