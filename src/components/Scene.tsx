@@ -23,6 +23,7 @@ function useUniqueId(){
 }
 
 export type SceneProps = {
+  children?: React.ReactNode,
   position?: Partial<ScenePosition>,
   style?: React.CSSProperties 
   scale?: number
@@ -30,7 +31,7 @@ export type SceneProps = {
 } & ({id?: string} | {'data-scene-id'?: string})
 
 const showBorders = new URLSearchParams(window.location.search).get('borders') === 'true'
-export const Scene: React.SFC<SceneProps> = (props) => {
+export const Scene: React.FunctionComponent<SceneProps> = (props) => {
   const randomId = useUniqueId()
   const id = (('data-scene-id' in props) ? props["data-scene-id"] : (('id' in props) ? props.id : undefined)) || randomId
   // const id = props['data-scene-id'] || randomId

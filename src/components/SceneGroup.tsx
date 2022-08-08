@@ -2,6 +2,7 @@ import React from 'react'
 import { ScenePosition, generatePositionStyle } from './Scene'
 
 export type Props = {
+  children?: React.ReactNode,
   style?: React.CSSProperties
   position?: Partial<ScenePosition>,
   scale?: number

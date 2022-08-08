@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export interface Props {
   'for': string,
   'data-scene-id'?: string,
 }
-export const SceneProxy: React.SFC<Props> = (props) => {
+export const SceneProxy: React.FunctionComponent<Props> = (props) => {
   const id = props['data-scene-id'] || `proxy-for-${props.for}`
 
   return (

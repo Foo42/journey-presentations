@@ -26,7 +26,7 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
   const futureScenes = allScenes.slice(normalised.currentSceneIndex + 1)
   const { currentSceneStepIndex } = normalised
   const position = currentScene.position
-  const currentPosition = { x: 0, y: 0, ...position }
+  const currentPosition = { ...position }
   const currentStep = currentScene.steps[normalised.currentSceneStepIndex]
   const stepsForCurrentScene = currentScene.steps
   const allPastSteps = [...flatMap(pastScenes, scene => scene.steps), ...stepsForCurrentScene.slice(0, currentSceneStepIndex + 1)]
