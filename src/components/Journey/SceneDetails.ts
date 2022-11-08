@@ -10,3 +10,8 @@ export interface SceneDetails {
   fitFactor?: number
   id: string
 }
+
+export interface ProxySceneDetails {
+  id: string,
+  proxyFor: string
+}

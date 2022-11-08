@@ -1,5 +1,5 @@
 import { NormalisedJourneyState } from './NormalisedJourneyState'
-import { SceneDetails } from './SceneDetails'
+import { ProxySceneDetails, SceneDetails } from './SceneDetails'
 
 export function isHtmlElement (el: unknown): el is HTMLElement {
   return el instanceof HTMLElement
@@ -30,15 +30,39 @@ export function getElementPositionVector (el: Element): Vector2 {
 
 export function loadJourneyStateFromDom (): NormalisedJourneyState {
   const viewPosition = getElementPositionVector(document.querySelector('.scene-view')!)
-  const sceneElements = Array.from(document.querySelectorAll('.scene,.scene-proxy')).filter(isHtmlElement)
+  const allSceneElements = Array.from(document.querySelectorAll('.scene,.scene-proxy,.frame-scene')).filter(isHtmlElement)
 
-  const proxyElements = sceneElements.filter(element => element.hasAttribute('data-proxy-for'))
+  const proxyElements = allSceneElements.filter(element => element.hasAttribute('data-proxy-for'))
+  const frameElements = allSceneElements.filter(element => element.hasAttribute('data-frame-around'))
   console.log(`found ${proxyElements.length} proxies`)
-  console.log(`found ${sceneElements.length} scene elements`)
-  const sceneAndProxyDetails: (SceneDetails | {id: string, proxyFor: string})[] = sceneElements.map(sceneElement => {
+  console.log(`found ${frameElements.length} frames`)
+  console.log(`found ${allSceneElements.length} scene elements`)
+
+  const sceneAndProxyDetails: (SceneDetails | ProxySceneDetails)[] = allSceneElements.map(sceneElement => {
     const id = sceneElement.id
     if (proxyElements.includes(sceneElement)) {
       return { id, proxyFor: sceneElement.getAttribute('data-proxy-for') || 'BAD' }
+    }
+    if(frameElements.includes(sceneElement)){
+      const framedIds = (sceneElement.getAttribute('data-frame-around') ?? '').split(',').map(id => id.trim())
+      const framedElements = allSceneElements.filter(el => framedIds.includes(el.id))
+      const boundingRects = framedElements.map(el => el.getBoundingClientRect()).map(({height, width, x, y}) => ({top: y, left: x, bottom: y + height, right: x + width}))
+      const maxBound = boundingRects.reduce((agg, current) => ({
+        top: Math.min(agg.top, current.top),
+        left: Math.min(agg.left, current.left),
+        right: Math.max(agg.right, current.right),
+        bottom: Math.max(agg.bottom, current.bottom)
+      }), {top: 0, left: 0, right: 0, bottom: 0})
+      const centre = {
+        x: (maxBound.left + maxBound.right) / 2,
+        y: (maxBound.top + maxBound.bottom) / 2
+      }
+      const deltaVector = vectorSubtract(centre, viewPosition)
+      const position = deltaVector
+      const width = maxBound.right - maxBound.left
+      const height = maxBound.bottom - maxBound.top
+      const fitFactor = Number(sceneElement.getAttribute('data-fit-factor')) || undefined
+      return { position, id, width, height, steps: [], fitFactor }
     }
     const deltaVector = vectorSubtract(elementCenter(sceneElement), viewPosition)
     const position = deltaVector
