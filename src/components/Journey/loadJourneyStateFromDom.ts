@@ -44,15 +44,18 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
       return { id, proxyFor: sceneElement.getAttribute('data-proxy-for') || 'BAD' }
     }
     if(frameElements.includes(sceneElement)){
-      const framedIds = (sceneElement.getAttribute('data-frame-around') ?? '').split(',').map(id => id.trim())
-      const framedElements = allSceneElements.filter(el => framedIds.includes(el.id))
+      const frameSelectors = (sceneElement.getAttribute('data-frame-around') ?? '').split(',').map(id => id.trim())
+      const framedElements = allSceneElements.filter(el => frameSelectors.some(selector => el.matches(selector)))
       const boundingRects = framedElements.map(el => el.getBoundingClientRect()).map(({height, width, x, y}) => ({top: y, left: x, bottom: y + height, right: x + width}))
+      if(boundingRects.length === 0){
+        throw new Error(`No elements match data-frame-around = "${frameSelectors}" for frame-scene: ${id}`)
+      }
       const maxBound = boundingRects.reduce((agg, current) => ({
         top: Math.min(agg.top, current.top),
         left: Math.min(agg.left, current.left),
         right: Math.max(agg.right, current.right),
         bottom: Math.max(agg.bottom, current.bottom)
-      }), {top: 0, left: 0, right: 0, bottom: 0})
+      }))
       const centre = {
         x: (maxBound.left + maxBound.right) / 2,
         y: (maxBound.top + maxBound.bottom) / 2
