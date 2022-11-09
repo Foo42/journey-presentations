@@ -90,12 +90,18 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
     }
   })
 
-  const [sceneIdFromHash, stepIdFromHash] = window.location.hash.substr(1).split('/')
+  const [sceneIdFromHash, stepIdFromHash] = window.location.hash.substring(1).split('/')
   const currentSceneIndexFromHash = sceneDetails.findIndex(scene => scene.id === sceneIdFromHash)
   const currentStepIndexFromHash = (sceneDetails[currentSceneIndexFromHash] || { steps: [] }).steps.findIndex(step => step.id === stepIdFromHash)
 
   const currentSceneIndex = currentSceneIndexFromHash === -1 ? 0 : currentSceneIndexFromHash
   const currentSceneStepIndex = currentStepIndexFromHash === -1 ? 0 : currentStepIndexFromHash
+  console.log({
+    sceneIdFromHash,
+    stepIdFromHash,
+    currentSceneIndexFromHash,
+    currentStepIndexFromHash
+  })
   console.log(sceneDetails)
   return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false }
 }
