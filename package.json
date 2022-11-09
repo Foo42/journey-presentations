@@ -1,6 +1,6 @@
 {
   "name": "journey-presentations",
-  "version": "0.3.0-alpha-frame-scenes.0",
+  "version": "0.3.0-alpha-frame-scenes.1",
   "description": "Framework for presentations which take people on a journey",
   "main": "build/src/library.js",
   "types": "build/src/library.d.ts",
