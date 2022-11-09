@@ -45,7 +45,8 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
     }
     if(frameElements.includes(sceneElement)){
       const frameSelectors = (sceneElement.getAttribute('data-frame-around') ?? '').split(',').map(id => id.trim())
-      const framedElements = allSceneElements.filter(el => frameSelectors.some(selector => el.matches(selector)))
+
+      const framedElements = frameSelectors.flatMap(sel => [...document.querySelectorAll(sel)])
       const boundingRects = framedElements.map(el => el.getBoundingClientRect()).map(({height, width, x, y}) => ({top: y, left: x, bottom: y + height, right: x + width}))
       if(boundingRects.length === 0){
         throw new Error(`No elements match data-frame-around = "${frameSelectors}" for frame-scene: ${id}`)
