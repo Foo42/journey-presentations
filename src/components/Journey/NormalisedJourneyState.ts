@@ -5,3 +5,12 @@ export interface NormalisedJourneyState {
   currentSceneStepIndex: number
   isInTransition: boolean
 }
+
+export function defaultNormalisedJourneyState(): NormalisedJourneyState {
+  return {
+    sceneDetails: [],
+    currentSceneIndex: -1,
+    currentSceneStepIndex: -1,
+    isInTransition: false
+  }
+}

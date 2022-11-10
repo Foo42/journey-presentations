@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useLayoutEffect, useReducer } from 'react';
 import { neg, px } from '../Scene';
 import { denormaliseJourneyState } from './denormaliseJourneyState';
 import { grayGradientBackgroundRenderer } from './grayGradientBackgroundRenderer';
+import { JourneyStateContext } from './JourneyContext';
 import { JourneyState } from './JourneyState';
 import { loadJourneyStateFromDom, vectorSubtract } from './loadJourneyStateFromDom';
 import { NormalisedJourneyState } from './NormalisedJourneyState';
@@ -89,7 +90,9 @@ export const MakeJourney = function MakeJourney<CustomPropsT> (innerJourney: Jou
     </div>
     <div className='journey' style={{ overflow: 'hidden',  width: '100vw', height: '100vh' }} onClick={describePosition(scaleAdjustment)}>
       <div className='scene-view' style={sceneViewStyle} onTransitionEnd={onTransitionEnd}>
-        {innerJourney(combinedState)}
+        <JourneyStateContext.Provider value={journeyState}>
+          {innerJourney(combinedState)}
+        </JourneyStateContext.Provider>
       </div>
     </div>
     </Fragment>)
