@@ -1,6 +1,6 @@
 {
   "name": "journey-presentations",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Framework for presentations which take people on a journey",
   "main": "build/src/library.js",
   "types": "build/src/library.d.ts",
