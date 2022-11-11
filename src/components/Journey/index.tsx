@@ -1,4 +1,5 @@
-import React, { Fragment, useEffect, useLayoutEffect, useReducer } from 'react';
+import React, { Fragment, ReactElement, useEffect, useLayoutEffect, useReducer } from 'react';
+import { GradientBackground } from '../Backgrounds/gradientBackground';
 import { neg, px } from '../Scene';
 import { denormaliseJourneyState } from './denormaliseJourneyState';
 import { grayGradientBackgroundRenderer } from './grayGradientBackgroundRenderer';
@@ -45,7 +46,7 @@ export type WithJourneyState = { journeyState: JourneyState }
 type JourneyStateRecipient<CustomPropsT> = React.FC<CustomPropsT & WithJourneyState>
 type ReturnedJourney<CustomPropsT> = React.FC<CustomPropsT>
 
-export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: JourneyStateRecipient<CustomPropsT>, backGroundRenderer: JourneyStateRecipient<CustomPropsT> = grayGradientBackgroundRenderer): ReturnedJourney<CustomPropsT> {
+export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: JourneyStateRecipient<CustomPropsT>, backGroundRenderer: JourneyStateRecipient<CustomPropsT> | ReactElement<any, any> = <GradientBackground/>): ReturnedJourney<CustomPropsT> {
   return function YourJourney(customProps: CustomPropsT) {
     const [normalisedJourneyState, dispatch] = useReducer(reducer, getDefaultJourneyState())
 
@@ -104,7 +105,7 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
     return (<Fragment>
       <JourneyStateContext.Provider value={journeyState}>
         <div className='background-holder' style={{ position: 'absolute', transform: 'translateZ(0)', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden' }}>
-          {backGroundRenderer(combinedState)}
+          {'type' in backGroundRenderer ? backGroundRenderer : backGroundRenderer(combinedState)}
         </div>
         <div className='journey' style={{ overflow: 'hidden', width: '100vw', height: '100vh' }} onClick={describePosition(scaleAdjustment)}>
           <div className='scene-view' style={sceneViewStyle} onTransitionEnd={onTransitionEnd}>
