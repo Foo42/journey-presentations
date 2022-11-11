@@ -102,19 +102,19 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
     const combinedState = { ...customProps, journeyState }
 
     return (<Fragment>
-      <div className='background-holder' style={{ position: 'absolute', transform: 'translateZ(0)', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden' }}>
-        {backGroundRenderer(combinedState)}
-      </div>
-      <div className='journey' style={{ overflow: 'hidden', width: '100vw', height: '100vh' }} onClick={describePosition(scaleAdjustment)}>
-        <div className='scene-view' style={sceneViewStyle} onTransitionEnd={onTransitionEnd}>
-          <JourneyStateContext.Provider value={journeyState}>
-            {innerJourney(combinedState)}
-          </JourneyStateContext.Provider>
+      <JourneyStateContext.Provider value={journeyState}>
+        <div className='background-holder' style={{ position: 'absolute', transform: 'translateZ(0)', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden' }}>
+          {backGroundRenderer(combinedState)}
         </div>
-      </div>
-      {
-        journeyState.isBlackout ? (<div className='black-out' style={{ position: 'absolute', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden', backgroundColor: 'black'}}></div>) : null
-      }
+        <div className='journey' style={{ overflow: 'hidden', width: '100vw', height: '100vh' }} onClick={describePosition(scaleAdjustment)}>
+          <div className='scene-view' style={sceneViewStyle} onTransitionEnd={onTransitionEnd}>
+              {innerJourney(combinedState)}
+          </div>
+        </div>
+        {
+          journeyState.isBlackout ? (<div className='black-out' style={{ position: 'absolute', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden', backgroundColor: 'black'}}></div>) : null
+        }
+        </JourneyStateContext.Provider>
     </Fragment>)
   }
 }
