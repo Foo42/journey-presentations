@@ -9,7 +9,7 @@ import { NormalisedJourneyState } from './NormalisedJourneyState';
 import { reducer } from './reducer';
 import { SceneDetails } from './SceneDetails';
 
-function getDefaultJourneyState (): NormalisedJourneyState {
+function getDefaultJourneyState(): NormalisedJourneyState {
   return {
     sceneDetails: [],
     currentSceneIndex: -1,
@@ -19,7 +19,7 @@ function getDefaultJourneyState (): NormalisedJourneyState {
 }
 
 const defaultFitFactor = Number(new URLSearchParams(window.location.search).get('fitFactor')) || 0.85
-function getRequiredScaleAdjustment (currentScene?: SceneDetails): number | undefined {
+function getRequiredScaleAdjustment(currentScene?: SceneDetails): number | undefined {
   if (!currentScene) {
     console.log('no scene no scale')
     return undefined
@@ -40,12 +40,12 @@ function getRequiredScaleAdjustment (currentScene?: SceneDetails): number | unde
   return requiredScalingFactor
 }
 
-export type WithJourneyState = {journeyState: JourneyState}
-type JourneyStateRecipient<CustomPropsT>  = React.FC<CustomPropsT & WithJourneyState>
+export type WithJourneyState = { journeyState: JourneyState }
+type JourneyStateRecipient<CustomPropsT> = React.FC<CustomPropsT & WithJourneyState>
 type ReturnedJourney<CustomPropsT> = React.FC<CustomPropsT>
 
-export const MakeJourney = function MakeJourney<CustomPropsT> (innerJourney: JourneyStateRecipient<CustomPropsT>, backGroundRenderer: JourneyStateRecipient<CustomPropsT> = grayGradientBackgroundRenderer): ReturnedJourney<CustomPropsT> {
-  return function YourJourney (customProps: CustomPropsT) {
+export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: JourneyStateRecipient<CustomPropsT>, backGroundRenderer: JourneyStateRecipient<CustomPropsT> = grayGradientBackgroundRenderer): ReturnedJourney<CustomPropsT> {
+  return function YourJourney(customProps: CustomPropsT) {
     const [normalisedJourneyState, dispatch] = useReducer(reducer, getDefaultJourneyState())
 
     useLayoutEffect(() => dispatch({ type: 'replace', newState: loadJourneyStateFromDom() }), [])
@@ -64,6 +64,7 @@ export const MakeJourney = function MakeJourney<CustomPropsT> (innerJourney: Jou
 
     const journeyState = denormaliseJourneyState(normalisedJourneyState)
 
+    // Represent progress in the url
     useEffect(() => {
       const scene = journeyState.currentScene
       const hash = `${scene && scene.id}${journeyState.currentStep ? '/' + journeyState.currentStep.id : ''}`
@@ -71,10 +72,10 @@ export const MakeJourney = function MakeJourney<CustomPropsT> (innerJourney: Jou
     }, [journeyState.currentScene, journeyState.currentStep])
 
     const currentPosition = journeyState.currentPosition
-    const scaleAdjustment =  getRequiredScaleAdjustment(journeyState.currentScene)
-    const scaleTransform = scaleAdjustment ? ` scale(${scaleAdjustment}, ${scaleAdjustment })` : ''
+    const scaleAdjustment = getRequiredScaleAdjustment(journeyState.currentScene)
+    const scaleTransform = scaleAdjustment ? ` scale(${scaleAdjustment}, ${scaleAdjustment})` : ''
     const translationTransform = `translate(${px(neg(currentPosition.x))}, ${px(neg(currentPosition.y))})`
-    const transform = scaleTransform + translationTransform 
+    const transform = scaleTransform + translationTransform
     console.log('transform:', transform)
     const sceneViewStyle: React.CSSProperties = { transformOrigin: '0 0', position: 'fixed', top: '50%', left: '50%', transform, transition: 'transform ease 1s', willChange: 'transform' }
 
@@ -83,35 +84,33 @@ export const MakeJourney = function MakeJourney<CustomPropsT> (innerJourney: Jou
     }
 
     const combinedState = { ...customProps, journeyState }
-    return (<Fragment>
 
-    <div className='background-holder' style={{ position: 'absolute', transform: 'translateZ(0)', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden' }}>
-      {backGroundRenderer(combinedState)}
-    </div>
-    <div className='journey' style={{ overflow: 'hidden',  width: '100vw', height: '100vh' }} onClick={describePosition(scaleAdjustment)}>
-      <div className='scene-view' style={sceneViewStyle} onTransitionEnd={onTransitionEnd}>
-        <JourneyStateContext.Provider value={journeyState}>
-          {innerJourney(combinedState)}
-        </JourneyStateContext.Provider>
+    return (<Fragment>
+      <div className='background-holder' style={{ position: 'absolute', transform: 'translateZ(0)', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden' }}>
+        {backGroundRenderer(combinedState)}
       </div>
-    </div>
+      <div className='journey' style={{ overflow: 'hidden', width: '100vw', height: '100vh' }} onClick={describePosition(scaleAdjustment)}>
+        <div className='scene-view' style={sceneViewStyle} onTransitionEnd={onTransitionEnd}>
+          <JourneyStateContext.Provider value={journeyState}>
+            {innerJourney(combinedState)}
+          </JourneyStateContext.Provider>
+        </div>
+      </div>
     </Fragment>)
   }
 }
 
-function describePosition (scaleAdjustment: number = 1) {
+function describePosition(scaleAdjustment: number = 1) {
   return (ev: React.MouseEvent) => {
-    const middle = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
     const clickPosition = { x: ev.clientX, y: ev.clientY }
-    const positionRelativeToMiddle = vectorSubtract(clickPosition, middle)
 
     const allScenes = Array.from(document.querySelectorAll('.scene, .journey'))
     const scenesContainingClick = allScenes.filter(scene => {
       const bounding = scene.getBoundingClientRect()
       return clickPosition.x >= bounding.left &&
-      clickPosition.x <= bounding.right &&
-      clickPosition.y >= bounding.top &&
-      clickPosition.y <= bounding.bottom
+        clickPosition.x <= bounding.right &&
+        clickPosition.y >= bounding.top &&
+        clickPosition.y <= bounding.bottom
     })
 
     const relativePositions = scenesContainingClick.map(scene => {
@@ -125,26 +124,4 @@ function describePosition (scaleAdjustment: number = 1) {
   }
 }
 
-type Vec = {x: number, y: number}
-function vectorAdd (a: Vec, b: Vec): Vec {
-  return { x: a.x + b.x, y: a.y + b.y }
-}
-
-function walkUpTo (selector: string, element: HTMLElement, includeFinal = true): HTMLElement[] {
-  const chain = [element]
-  let current: HTMLElement | null = element
-  while (current = current.parentElement) {
-    if (current.webkitMatchesSelector(selector)) {
-      break
-    }
-    chain.push(current)
-  }
-  if (!current) {
-    throw new Error('No parent matching selector found')
-  }
-  if (includeFinal) {
-    chain.push(current)
-  }
-  return chain
-}
-
+type Vec = { x: number, y: number }
