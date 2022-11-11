@@ -66,6 +66,9 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
 
     // Represent progress in the url
     useEffect(() => {
+      if(journeyState.allScenes.length === 0){
+        return
+      }
       const scene = journeyState.currentScene
       const hash = `${scene && scene.id}${journeyState.currentStep ? '/' + journeyState.currentStep.id : ''}`
       window.location.hash = hash
