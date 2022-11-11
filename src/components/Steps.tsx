@@ -5,6 +5,7 @@ import { useJourneyState } from '../library';
 // const hideWhileFuture = (id: string): React.CSSProperties => props.journeyState.isFuture(id) ? {transition: 'opacity ease 1s', opacity: 0} : {transition: 'opacity easy 1s'}
 type HiddenStepProps = {
   id?: string,
+  triggerId?: string,
   style?: CSSProperties
   styleWhileFuture?: CSSProperties
   wrapper?: 'div' | 'li' | 'span'
@@ -13,7 +14,7 @@ type HiddenStepProps = {
 export const HiddenStep: React.FunctionComponent<PropsWithChildren<HiddenStepProps>> = (props) => {
   const journeyState = useJourneyState()
   const id = props.id ?? `step-${useId()}`
-  const isFuture = journeyState.isFuture(id)
+  const isFuture = journeyState.isFuture(props.triggerId ?? id)
   const hiddenStyle = {opacity: 0, ...(props.styleWhileFuture ?? {})}
   const conditionalStyle: CSSProperties = isFuture ? hiddenStyle : {}
   const style: CSSProperties = {transition: 'opacity ease 1s', ...(props.style ?? {}), ...conditionalStyle}
