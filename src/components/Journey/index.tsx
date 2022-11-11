@@ -92,8 +92,9 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
       window.location.hash = hash
     }, [journeyState.currentScene, journeyState.currentStep])
 
+    // todo: Find a better way to support totalOverview mode. Currently the position is being conditionally set inside denormalise, where as scale is done here in an ugly ternary
     const currentPosition = journeyState.currentPosition
-    const scaleAdjustment = getRequiredScaleAdjustment(journeyState.currentScene)
+    const scaleAdjustment = getRequiredScaleAdjustment((journeyState.isOverview && normalisedJourneyState.totalOverview) ? ({...normalisedJourneyState.totalOverview!, steps: [], id: '(total-overview)'}) : journeyState.currentScene)
     const scaleTransform = scaleAdjustment ? ` scale(${scaleAdjustment}, ${scaleAdjustment})` : ''
     const translationTransform = `translate(${px(neg(currentPosition.x))}, ${px(neg(currentPosition.y))})`
     const transform = scaleTransform + translationTransform
