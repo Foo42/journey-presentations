@@ -1,5 +1,5 @@
 import React, { Fragment, ReactElement, useEffect, useLayoutEffect, useReducer } from 'react';
-import { GradientBackground } from '../Backgrounds/gradientBackground';
+import { GradientBackground } from '../Backgrounds/GradientBackground';
 import { neg, px } from '../Scene';
 import { denormaliseJourneyState } from './denormaliseJourneyState';
 import { grayGradientBackgroundRenderer } from './grayGradientBackgroundRenderer';
