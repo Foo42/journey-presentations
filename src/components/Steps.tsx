@@ -1,4 +1,4 @@
-import React, { CSSProperties, PropsWithChildren } from 'react';
+import React, { createElement, CSSProperties, PropsWithChildren } from 'react';
 import { useId } from "react"
 import { useJourneyState } from '../library';
 
@@ -7,6 +7,7 @@ type HiddenStepProps = {
   id?: string,
   style?: CSSProperties
   styleWhileFuture?: CSSProperties
+  wrapper?: 'div' | 'li' | 'span'
 }
 
 export const HiddenStep: React.FunctionComponent<PropsWithChildren<HiddenStepProps>> = (props) => {
@@ -17,9 +18,5 @@ export const HiddenStep: React.FunctionComponent<PropsWithChildren<HiddenStepPro
   const conditionalStyle: CSSProperties = isFuture ? hiddenStyle : {}
   const style: CSSProperties = {transition: 'opacity ease 1s', ...(props.style ?? {}), ...conditionalStyle}
 
-  return (
-    <div id={id} style={style} className='journey-step'>
-      {props.children}
-    </div>
-  )
+  return createElement(props.wrapper ?? 'div', {style, className:'journey-step', id, children: props.children})
 }
