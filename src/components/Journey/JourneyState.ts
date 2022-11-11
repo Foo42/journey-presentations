@@ -13,4 +13,5 @@ export interface JourneyState {
   isInTransition: boolean
   isFuture: (id: string) => boolean
   isBlackout: boolean
+  isOverview: boolean
 }

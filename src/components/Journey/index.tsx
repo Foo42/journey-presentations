@@ -16,7 +16,8 @@ function getDefaultJourneyState(): NormalisedJourneyState {
     currentSceneIndex: -1,
     currentSceneStepIndex: -1,
     isInTransition: false,
-    isBlackout: false
+    isBlackout: false,
+    isOverview: false
   }
 }
 
@@ -63,6 +64,9 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
             break;
           case 'b':
             dispatch({type: 'toggle-blackout'} as const)
+            break;
+          case 'o':
+            dispatch({type: 'toggle-overview'} as const)
             break;
         
           default:

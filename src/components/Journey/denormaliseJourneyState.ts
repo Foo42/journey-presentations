@@ -20,13 +20,14 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
       allFutureSteps: flatMap(allScenes, scene => scene.steps),
       isFuture: () => true,
       isInTransition: false,
-      isBlackout: false
+      isBlackout: false,
+      isOverview: false
     }
   }
   const pastScenes = allScenes.slice(0, normalised.currentSceneIndex)
   const futureScenes = allScenes.slice(normalised.currentSceneIndex + 1)
   const { currentSceneStepIndex } = normalised
-  const position = currentScene.position
+  const position = normalised.isOverview && normalised.totalOverview ? normalised.totalOverview.position : currentScene.position
   const currentPosition = { ...position }
   const currentStep = currentScene.steps[normalised.currentSceneStepIndex]
   const stepsForCurrentScene = currentScene.steps
@@ -47,6 +48,7 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
     allFutureSteps: allFutureSteps,
     isFuture,
     isInTransition: normalised.isInTransition,
-    isBlackout: normalised.isBlackout
+    isBlackout: normalised.isBlackout,
+    isOverview: normalised.isOverview
   }
 }

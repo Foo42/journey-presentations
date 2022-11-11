@@ -48,26 +48,12 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
       const frameSelectors = (sceneElement.getAttribute('data-frame-around') ?? '').split(',').map(id => id.trim())
 
       const framedElements = frameSelectors.flatMap(sel => [...document.querySelectorAll(sel)])
-      const boundingRects = framedElements.map(el => el.getBoundingClientRect()).map(({height, width, x, y}) => ({top: y, left: x, bottom: y + height, right: x + width}))
-      if(boundingRects.length === 0){
+      if(frameElements.length === 0){
         throw new Error(`No elements match data-frame-around = "${frameSelectors}" for frame-scene: ${id}`)
       }
-      const maxBound = boundingRects.reduce((agg, current) => ({
-        top: Math.min(agg.top, current.top),
-        left: Math.min(agg.left, current.left),
-        right: Math.max(agg.right, current.right),
-        bottom: Math.max(agg.bottom, current.bottom)
-      }))
-      const centre = {
-        x: (maxBound.left + maxBound.right) / 2,
-        y: (maxBound.top + maxBound.bottom) / 2
-      }
-      const deltaVector = vectorSubtract(centre, viewPosition)
-      const position = deltaVector
-      const width = maxBound.right - maxBound.left
-      const height = maxBound.bottom - maxBound.top
+
       const fitFactor = Number(sceneElement.getAttribute('data-fit-factor')) || undefined
-      return { position, id, width, height, steps: [], fitFactor }
+      return {...extractFrameScenePosition(framedElements, viewPosition), id, fitFactor, steps: []}
     }
     const deltaVector = vectorSubtract(elementCenter(sceneElement), viewPosition)
     const position = deltaVector
@@ -104,7 +90,27 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
     currentStepIndexFromHash
   })
   console.log(sceneDetails)
-  return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false, isBlackout: false }
+  const totalOverview = extractFrameScenePosition([...document.querySelectorAll('.scene')], viewPosition)
+  return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false, isBlackout: false, totalOverview, isOverview: false }
+}
+
+function extractFrameScenePosition(framedElements: Element[], viewPosition: Vector2) {
+  const boundingRects = framedElements.map(el => el.getBoundingClientRect()).map(({ height, width, x, y }) => ({ top: y, left: x, bottom: y + height, right: x + width }))
+  const maxBound = boundingRects.reduce((agg, current) => ({
+    top: Math.min(agg.top, current.top),
+    left: Math.min(agg.left, current.left),
+    right: Math.max(agg.right, current.right),
+    bottom: Math.max(agg.bottom, current.bottom)
+  }))
+  const centre = {
+    x: (maxBound.left + maxBound.right) / 2,
+    y: (maxBound.top + maxBound.bottom) / 2
+  }
+  const deltaVector = vectorSubtract(centre, viewPosition)
+  const position = deltaVector
+  const width = maxBound.right - maxBound.left
+  const height = maxBound.bottom - maxBound.top
+  return { position, width, height }
 }
 
 function loadStepsForScene (sceneElement: HTMLElement) {
