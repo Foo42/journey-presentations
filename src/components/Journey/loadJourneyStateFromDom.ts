@@ -104,7 +104,7 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
     currentStepIndexFromHash
   })
   console.log(sceneDetails)
-  return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false }
+  return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false, isBlackout: false }
 }
 
 function loadStepsForScene (sceneElement: HTMLElement) {

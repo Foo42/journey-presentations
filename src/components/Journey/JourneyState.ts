@@ -12,4 +12,5 @@ export interface JourneyState {
   currentSceneStepIndex?: number
   isInTransition: boolean
   isFuture: (id: string) => boolean
+  isBlackout: boolean
 }

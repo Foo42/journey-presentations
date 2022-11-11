@@ -10,6 +10,8 @@ type Action = {
   newState: NormalisedJourneyState;
 } | {
   type: 'slideTransitionComplete';
+} | {
+  type: 'toggle-blackout'
 }
 
 export function reducer (state: NormalisedJourneyState, action: Action): NormalisedJourneyState {
@@ -22,6 +24,8 @@ export function reducer (state: NormalisedJourneyState, action: Action): Normali
       return action.newState
     case 'slideTransitionComplete':
       return { ...state, isInTransition: false }
+    case 'toggle-blackout':
+      return {...state, isBlackout: !state.isBlackout}
     default:
       return state
   }

@@ -4,6 +4,7 @@ export interface NormalisedJourneyState {
   currentSceneIndex: number
   currentSceneStepIndex: number
   isInTransition: boolean
+  isBlackout: boolean
 }
 
 export function defaultNormalisedJourneyState(): NormalisedJourneyState {
@@ -11,6 +12,7 @@ export function defaultNormalisedJourneyState(): NormalisedJourneyState {
     sceneDetails: [],
     currentSceneIndex: -1,
     currentSceneStepIndex: -1,
-    isInTransition: false
+    isInTransition: false,
+    isBlackout: false
   }
 }

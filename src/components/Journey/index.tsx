@@ -14,7 +14,8 @@ function getDefaultJourneyState(): NormalisedJourneyState {
     sceneDetails: [],
     currentSceneIndex: -1,
     currentSceneStepIndex: -1,
-    isInTransition: false
+    isInTransition: false,
+    isBlackout: false
   }
 }
 
@@ -53,8 +54,19 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
     useEffect(() => {
       const handler = (ev: KeyboardEvent) => {
         ev.preventDefault()
-        const action = (ev.key === 'ArrowLeft' || ev.key === 'PageUp') ? { type: 'retard' } as const : { type: 'advance' } as const
-        dispatch(action)
+        switch (ev.key) {
+          case 'ArrowLeft':
+          case 'PageUp':
+          case 'ArrowUp':
+            dispatch({type: 'retard'} as const)
+            break;
+          case 'b':
+            dispatch({type: 'toggle-blackout'} as const)
+            break;
+        
+          default:
+            dispatch({type: 'advance'})
+        }
       }
       document.addEventListener('keydown', handler, false)
       return () => {
@@ -100,6 +112,9 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
           </JourneyStateContext.Provider>
         </div>
       </div>
+      {
+        journeyState.isBlackout ? (<div className='black-out' style={{ position: 'absolute', top: '0', left: '0', bottom: '0', right: '0', overflow: 'hidden', backgroundColor: 'black'}}></div>) : null
+      }
     </Fragment>)
   }
 }

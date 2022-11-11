@@ -19,7 +19,8 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
       allPastSteps: [],
       allFutureSteps: flatMap(allScenes, scene => scene.steps),
       isFuture: () => true,
-      isInTransition: false
+      isInTransition: false,
+      isBlackout: false
     }
   }
   const pastScenes = allScenes.slice(0, normalised.currentSceneIndex)
@@ -45,6 +46,7 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
     allPastSteps: allPastSteps,
     allFutureSteps: allFutureSteps,
     isFuture,
-    isInTransition: normalised.isInTransition
+    isInTransition: normalised.isInTransition,
+    isBlackout: normalised.isBlackout
   }
 }
