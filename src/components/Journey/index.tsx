@@ -71,6 +71,7 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
       }
       const scene = journeyState.currentScene
       const hash = `${scene && scene.id}${journeyState.currentStep ? '/' + journeyState.currentStep.id : ''}`
+      console.log('setting window hash to', hash)
       window.location.hash = hash
     }, [journeyState.currentScene, journeyState.currentStep])
 

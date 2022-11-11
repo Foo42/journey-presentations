@@ -29,6 +29,7 @@ export function getElementPositionVector (el: Element): Vector2 {
 }
 
 export function loadJourneyStateFromDom (): NormalisedJourneyState {
+  console.log('Loading state from the Dom')
   const viewPosition = getElementPositionVector(document.querySelector('.scene-view')!)
   const allSceneElements = Array.from(document.querySelectorAll('.scene,.scene-proxy,.frame-scene')).filter(isHtmlElement)
 
