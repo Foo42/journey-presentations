@@ -34,14 +34,19 @@ const showBorders = new URLSearchParams(window.location.search).get('borders') =
 export const Scene: React.FunctionComponent<SceneProps> = (props) => {
   const randomId = useUniqueId()
   const id = (('data-scene-id' in props) ? props["data-scene-id"] : (('id' in props) ? props.id : undefined)) || randomId
-  // const id = props['data-scene-id'] || randomId
+
+  const isAbsolutelyPositioned = props.position !== undefined
 
   const scalePrefix = props.scale ? `scale(${props.scale}, ${props.scale}) ` : ''
-  const transform = {transform: scalePrefix + 'translate(-50%, -50%) translateZ(0)'}
-  // const transform = {}
+  const centreTransform = isAbsolutelyPositioned ? 'translate(-50%, -50%)' : ''
+  const zTransform = 'translateZ(0)'
+  const transform = {transform: [scalePrefix, centreTransform, zTransform].join(' ')}
+
+  const positionMixin: React.CSSProperties = isAbsolutelyPositioned ? generatePositionStyle(props) : {}
+
   const borders = showBorders ? {border: '1px solid gray'} : {}
   const fitFactorAttribute = props.fitFactor !== undefined ? {'data-fit-factor': props.fitFactor} : {}
-  const style: React.CSSProperties = { ...borders, position: 'absolute', ...generatePositionStyle(props), ...transform, ...props.style};
+  const style: React.CSSProperties = { ...borders, ...positionMixin, ...transform, ...props.style};
   return (
     <div id={id} className="scene" style={style} {...fitFactorAttribute}>
       {props.children}
@@ -50,7 +55,7 @@ export const Scene: React.FunctionComponent<SceneProps> = (props) => {
 };
 export function generatePositionStyle (props: {position?: Partial<ScenePosition>}) {
   const { x = 0, y = 0 } = { x: 0, y: 0, ...props.position };
-  const pixelPositions = { top: px(y), left: px(x) };
-  return pixelPositions;
+  const pixelPositions= { top: px(y), left: px(x) };
+  return {position: 'absolute', pixelPositions} as const
 }
 
