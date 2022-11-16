@@ -28,12 +28,15 @@ export type SceneProps = {
   style?: React.CSSProperties 
   scale?: number
   fitFactor?: number
+  framingSelectors?: string
 } & ({id?: string} | {'data-scene-id'?: string})
 
 const showBorders = new URLSearchParams(window.location.search).get('borders') === 'true'
 export const Scene: React.FunctionComponent<SceneProps> = (props) => {
   const randomId = useUniqueId()
   const id = (('data-scene-id' in props) ? props["data-scene-id"] : (('id' in props) ? props.id : undefined)) || randomId
+
+  const framingMixin = props.framingSelectors !== undefined ? {'data-frame-around': props.framingSelectors} : {}
 
   const isAbsolutelyPositioned = props.position !== undefined
 
@@ -48,7 +51,7 @@ export const Scene: React.FunctionComponent<SceneProps> = (props) => {
   const fitFactorAttribute = props.fitFactor !== undefined ? {'data-fit-factor': props.fitFactor} : {}
   const style: React.CSSProperties = { ...borders, ...positionMixin, ...transform, ...props.style};
   return (
-    <div id={id} className="scene" style={style} {...fitFactorAttribute}>
+    <div id={id} className="scene" style={style} {...{...fitFactorAttribute, ...framingMixin}}>
       {props.children}
     </div>
   )

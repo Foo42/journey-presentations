@@ -1,5 +1,4 @@
-import { ScenePosition } from '../Scene'
-import { SceneDetails } from './SceneDetails'
+import { Frame, SceneDetails } from './SceneDetails'
 export interface NormalisedJourneyState {
   sceneDetails: SceneDetails[]
   currentSceneIndex: number
@@ -7,11 +6,7 @@ export interface NormalisedJourneyState {
   isInTransition: boolean
   isBlackout: boolean,
   isOverview: boolean,
-  totalOverview?: {
-    position: ScenePosition
-    width: number
-    height: number
-  }
+  totalOverview?: Frame
 }
 
 export function defaultNormalisedJourneyState(): NormalisedJourneyState {

@@ -17,9 +17,10 @@ export const SceneGroup: React.FC<Props> = (props) => {
 
   const positionMixin: React.CSSProperties = isAbsolutelyPositioned ? {position: 'absolute'} : {}
 
+
   const style: React.CSSProperties = {...positionMixin, overflow: 'visible', ...transform, ...generatePositionStyle(props), ...props.style}
   return (
-    <div className='scene-group' style={style}>
+    <div className='scene-group' style={style} >
       {props.children}
     </div>
   )

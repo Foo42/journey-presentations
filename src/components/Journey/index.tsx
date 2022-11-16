@@ -27,13 +27,14 @@ function getRequiredScaleAdjustment(currentScene?: SceneDetails): number | undef
     console.log('no scene no scale')
     return undefined
   }
-  const fitFactor = currentScene.fitFactor || defaultFitFactor
-  const actualWidth = currentScene.width
+  const {frame} = currentScene
+  const fitFactor = frame.fitFactor || defaultFitFactor
+  const actualWidth = frame.width
   const clientWidth = window.innerWidth
   const targetWidth = fitFactor * clientWidth
   const widthBasedScalingFactor = targetWidth / actualWidth
 
-  const actualHeight = currentScene.height
+  const actualHeight = frame.height
   const clientHeight = window.innerHeight
   const targetHeight = fitFactor * clientHeight
   const heightBasedScalingFactor = targetHeight / actualHeight
@@ -94,7 +95,7 @@ export const MakeJourney = function MakeJourney<CustomPropsT>(innerJourney: Jour
 
     // todo: Find a better way to support totalOverview mode. Currently the position is being conditionally set inside denormalise, where as scale is done here in an ugly ternary
     const currentPosition = journeyState.currentPosition
-    const scaleAdjustment = getRequiredScaleAdjustment((journeyState.isOverview && normalisedJourneyState.totalOverview) ? ({...normalisedJourneyState.totalOverview!, steps: [], id: '(total-overview)'}) : journeyState.currentScene)
+    const scaleAdjustment = getRequiredScaleAdjustment((journeyState.isOverview && normalisedJourneyState.totalOverview) ? ({frame: normalisedJourneyState.totalOverview!, steps: [], id: '(total-overview)'}) : journeyState.currentScene)
     const scaleTransform = scaleAdjustment ? ` scale(${scaleAdjustment}, ${scaleAdjustment})` : ''
     const translationTransform = `translate(${px(neg(currentPosition.x))}, ${px(neg(currentPosition.y))})`
     const transform = scaleTransform + translationTransform

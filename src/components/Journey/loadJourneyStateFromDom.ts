@@ -1,5 +1,5 @@
 import { NormalisedJourneyState } from './NormalisedJourneyState'
-import { ProxySceneDetails, SceneDetails } from './SceneDetails'
+import { ProxySceneDetails, SceneDetails, Frame } from './SceneDetails'
 
 export function isHtmlElement (el: unknown): el is HTMLElement {
   return el instanceof HTMLElement
@@ -34,9 +34,7 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
   const allSceneElements = Array.from(document.querySelectorAll('.scene,.scene-proxy,.frame-scene')).filter(isHtmlElement)
 
   const proxyElements = allSceneElements.filter(element => element.hasAttribute('data-proxy-for'))
-  const frameElements = allSceneElements.filter(element => element.hasAttribute('data-frame-around'))
   console.log(`found ${proxyElements.length} proxies`)
-  console.log(`found ${frameElements.length} frames`)
   console.log(`found ${allSceneElements.length} scene elements`)
 
   const sceneAndProxyDetails: (SceneDetails | ProxySceneDetails)[] = allSceneElements.map(sceneElement => {
@@ -44,25 +42,15 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
     if (proxyElements.includes(sceneElement)) {
       return { id, proxyFor: sceneElement.getAttribute('data-proxy-for') || 'BAD' }
     }
-    if(frameElements.includes(sceneElement)){
-      const frameSelectors = (sceneElement.getAttribute('data-frame-around') ?? '').split(',').map(id => id.trim())
-
-      const framedElements = frameSelectors.flatMap(sel => [...document.querySelectorAll(sel)])
-      if(frameElements.length === 0){
-        throw new Error(`No elements match data-frame-around = "${frameSelectors}" for frame-scene: ${id}`)
-      }
-
-      const fitFactor = Number(sceneElement.getAttribute('data-fit-factor')) || undefined
-      return {...extractFrameScenePosition(framedElements, viewPosition), id, fitFactor, steps: []}
+    const frameAround = sceneElement.getAttribute('data-frame-around')
+    const framedElements = frameAround === null ? [sceneElement] : frameAround.split(',').map(id => id.trim()).flatMap(sel => [...document.querySelectorAll(sel)])
+    if(framedElements .length === 0){
+      throw new Error(`No elements match data-frame-around = "${frameAround}" for frame-scene: ${id}`)
     }
-    const deltaVector = vectorSubtract(elementCenter(sceneElement), viewPosition)
-    const position = deltaVector
-    const boundingRect = sceneElement.getBoundingClientRect()
-    const width = boundingRect.width
-    const height = boundingRect.height
     const fitFactor = Number(sceneElement.getAttribute('data-fit-factor')) || undefined
+    const frame = {...frameAroundElements(framedElements, viewPosition), fitFactor}
     const stepsInScene = loadStepsForScene(sceneElement)
-    return { position, id, width, height, steps: stepsInScene, fitFactor }
+    return { id, steps: stepsInScene, frame }
   })
 
   const sceneDetails: SceneDetails[] = sceneAndProxyDetails.map(item => {
@@ -90,11 +78,11 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
     currentStepIndexFromHash
   })
   console.log(sceneDetails)
-  const totalOverview = extractFrameScenePosition([...document.querySelectorAll('.scene')], viewPosition)
+  const totalOverview = frameAroundElements([...document.querySelectorAll('.scene')], viewPosition)
   return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false, isBlackout: false, totalOverview, isOverview: false }
 }
 
-function extractFrameScenePosition(framedElements: Element[], viewPosition: Vector2) {
+function frameAroundElements(framedElements: Element[], viewPosition: Vector2): Frame {
   const boundingRects = framedElements.map(el => el.getBoundingClientRect()).map(({ height, width, x, y }) => ({ top: y, left: x, bottom: y + height, right: x + width }))
   const maxBound = boundingRects.reduce((agg, current) => ({
     top: Math.min(agg.top, current.top),

@@ -2,12 +2,16 @@ import { ScenePosition } from '../Scene'
 export interface StepDetails {
   id?: string
 }
-export interface SceneDetails {
-  position: ScenePosition
-  steps: StepDetails[]
-  width: number
-  height: number
+export type Frame = {
+  position: ScenePosition,
+  width: number,
+  height: number,
   fitFactor?: number
+}
+
+export interface SceneDetails {
+  frame: Frame
+  steps: StepDetails[]
   id: string
 }
 

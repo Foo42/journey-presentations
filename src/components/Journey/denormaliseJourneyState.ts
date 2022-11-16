@@ -27,7 +27,8 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
   const pastScenes = allScenes.slice(0, normalised.currentSceneIndex)
   const futureScenes = allScenes.slice(normalised.currentSceneIndex + 1)
   const { currentSceneStepIndex } = normalised
-  const position = normalised.isOverview && normalised.totalOverview ? normalised.totalOverview.position : currentScene.position
+  const position = normalised.isOverview && normalised.totalOverview ? normalised.totalOverview.position : currentScene.frame.position
+  // TODO: Maybe change JourneyState type to expose the frame rather than just position
   const currentPosition = { ...position }
   const currentStep = currentScene.steps[normalised.currentSceneStepIndex]
   const stepsForCurrentScene = currentScene.steps
