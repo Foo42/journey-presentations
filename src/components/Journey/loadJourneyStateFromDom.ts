@@ -48,7 +48,8 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
       throw new Error(`No elements match data-frame-around = "${frameAround}" for frame-scene: ${id}`)
     }
     const fitFactor = Number(sceneElement.getAttribute('data-fit-factor')) || undefined
-    const frame = {...frameAroundElements(framedElements, viewPosition), fitFactor}
+    const framedWithChildren = framedElements.flatMap(getAllContainedElements)
+    const frame = {...frameAroundElements(framedWithChildren, viewPosition), fitFactor}
     const stepsInScene = loadStepsForScene(sceneElement)
     return { id, steps: stepsInScene, frame }
   })
@@ -80,6 +81,21 @@ export function loadJourneyStateFromDom (): NormalisedJourneyState {
   console.log(sceneDetails)
   const totalOverview = frameAroundElements([...document.querySelectorAll('.scene')], viewPosition)
   return { sceneDetails, currentSceneIndex, currentSceneStepIndex, isInTransition: false, isBlackout: false, totalOverview, isOverview: false }
+}
+
+function getAllContainedElements(parent: Element): Element[] {
+  const processed: Element[] = []
+  const toProcess: Element[] = [parent]
+  while(toProcess.length > 0){
+    const processing = toProcess.pop()
+    if(processing === undefined){
+      break;
+    }
+    const children = [...processing.children]
+    toProcess.push(...children)
+    processed.push(processing)
+  }
+  return processed
 }
 
 function frameAroundElements(framedElements: Element[], viewPosition: Vector2): Frame {
