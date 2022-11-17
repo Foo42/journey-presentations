@@ -2,6 +2,7 @@ import React from 'react'
 import { ScenePosition, generatePositionStyle } from './Scene'
 
 export type Props = {
+  id?: string,
   children?: React.ReactNode,
   style?: React.CSSProperties
   position?: Partial<ScenePosition>,
@@ -19,8 +20,9 @@ export const SceneGroup: React.FC<Props> = (props) => {
 
 
   const style: React.CSSProperties = {...positionMixin, overflow: 'visible', ...transform, ...generatePositionStyle(props), ...props.style}
+  const idMixin = props.id !== undefined ? {id: props.id} : {}
   return (
-    <div className='scene-group' style={style} >
+    <div className='scene-group' style={style} {...idMixin}>
       {props.children}
     </div>
   )
