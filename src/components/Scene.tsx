@@ -59,6 +59,6 @@ export const Scene: React.FunctionComponent<SceneProps> = (props) => {
 export function generatePositionStyle (props: {position?: Partial<ScenePosition>}) {
   const { x = 0, y = 0 } = { x: 0, y: 0, ...props.position };
   const pixelPositions= { top: px(y), left: px(x) };
-  return {position: 'absolute', pixelPositions} as const
+  return {position: 'absolute', ...pixelPositions} as const
 }
 
