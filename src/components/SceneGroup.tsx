@@ -11,10 +11,10 @@ export type Props = {
 export const SceneGroup: React.FC<Props> = (props) => {
   const isAbsolutelyPositioned = props.position !== undefined
 
-  const scalePrefix = props.scale ? `scale(${props.scale}, ${props.scale}) ` : ''
+  const scaleTransform = props.scale ? `scale(${props.scale}, ${props.scale}) ` : ''
   const centreTransform = isAbsolutelyPositioned ? 'translate(-50%, -50%)' : ''
   const zTransform = 'translateZ(0)'
-  const transform = {transform: [scalePrefix, centreTransform, zTransform].join(' ')}
+  const transform = {transform: [centreTransform,scaleTransform, zTransform].join(' ')}
 
   const positionMixin: React.CSSProperties = isAbsolutelyPositioned ? {position: 'absolute'} : {}
 
