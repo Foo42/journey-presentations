@@ -8,3 +8,5 @@ export { FrameScene } from './components/FrameScene'
 export {GradientBackground} from './components/Backgrounds/GradientBackground'
 export {PerSceneBackgrounds} from './components/Backgrounds/PerSceneBackgrounds'
 export { useJourneyState } from './components/Journey/JourneyContext'
+export { JourneyState} from "./components/Journey/JourneyState";
+export { WithJourneyState } from "./components/Journey";
