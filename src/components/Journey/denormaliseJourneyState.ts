@@ -19,6 +19,7 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
       allPastSteps: [],
       allFutureSteps: flatMap(allScenes, scene => scene.steps),
       isFuture: () => true,
+      isPast: () => false,
       isInTransition: false,
       isBlackout: false,
       isOverview: false
@@ -37,6 +38,9 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
   const isFutureScene = (id: string) => !!futureScenes.find(scene => scene.id === id)
   const isFutureStep = (id: string) => !!allFutureSteps.find(step => step.id === id)
   const isFuture = (id: string) => isFutureScene(id) || isFutureStep(id)
+  const isPastScene = (id: string) => !!pastScenes.find(scene => scene.id === id)
+  const isPastStep = (id: string) => !!allPastSteps.find(step => step.id === id)
+  const isPast = (id: string) => isPastScene(id) || isPastStep(id)
   return {
     allScenes,
     currentScene,
@@ -48,6 +52,7 @@ export function denormaliseJourneyState (normalised: NormalisedJourneyState): Jo
     allPastSteps: allPastSteps,
     allFutureSteps: allFutureSteps,
     isFuture,
+    isPast,
     isInTransition: normalised.isInTransition,
     isBlackout: normalised.isBlackout,
     isOverview: normalised.isOverview
